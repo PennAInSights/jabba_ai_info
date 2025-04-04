@@ -1,5 +1,7 @@
 library(ggplot2)
 library(tidyr)
+library(dplyr)
+library(purrr)
 
 load_jabba_server_logs <- function(filenames) {
     rdat=NULL
@@ -38,8 +40,8 @@ get_cstores <- function(dat) {
 
 get_accession_windows <- function(dat) {
     stores = get_cstores(dat)
-    mint = str |> group_by(accession) |> slice(which.min(timestamp)) |> select(timestamp, accession) |> rename(start=timestamp)
-    maxt = str |> group_by(accession) |> slice(which.max(timestamp)) |> select(timestamp, accession) |> rename(end=timestamp)
+    mint = stores |> group_by(accession) |> slice(which.min(timestamp)) |> select(timestamp, accession) |> rename(start=timestamp)
+    maxt = stores |> group_by(accession) |> slice(which.max(timestamp)) |> select(timestamp, accession) |> rename(end=timestamp)
     win = mint |> left_join(maxt)   
     win$transfer_time = win$end - win$start
     win$dow = as.POSIXlt( win$start )$wday
@@ -115,6 +117,7 @@ accession_transfer_windows <- function(dat) {
 
 get_transfer_data <- function(filenames) {
     dat = load_jabba_server_logs(filenames)
+    print("loaded log files")
     win = get_accession_windows(dat)
     return(win)
 }
