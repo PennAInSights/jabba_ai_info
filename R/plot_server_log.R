@@ -170,8 +170,13 @@ get_study_plots <- function(accessions, dir)
     for (a in accessions) {
         accdir=paste(dir,'/', a)
         if (dir.exists(accdir)) {
-
-        }
+            stats = list.files(path=accir, pattern=glob2rx("*stats.csv"))
+            if (length(stats) > 0) {
+                print(paste("Results for:", a)
+            } else {
+                print(paste("Nothing for:", a))
+            }
+        }   
     }
     
  }
